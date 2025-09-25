@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <title>Selamat Ulang Tahun yang ke-20</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: #fff;
+      image-rendering: pixelated;
+
+      /* Pixel diagonal gradient */
+      background-color: #001f3f;
+      background-image:
+        repeating-linear-gradient(45deg,
+          #001f3f 0px,
+          #001f3f 8px,
+          #003366 8px,
+          #003366 16px,
+          #004080 16px,
+          #004080 24px,
+          #0074D9 24px,
+          #0074D9 32px);
+      background-size: 16px 16px;
+    }
+
+    .walker {
+      position: absolute;
+      bottom: -10%;
+      left: 0;
+      transform: translateY(-50%);
+      width: 100px;
+      transition: transform 0.3s ease;
+      image-rendering: pixelated;
+    }
+
+    .bounce {
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+
+    .letter {
+      position: absolute;
+      bottom: 0;
+      left: 49%;
+      width: 80px;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.2);
+      cursor: pointer;
+      image-rendering: pixelated;
+    }
+
+    /* aktif saat muncul */
+    .letter.show {
+      opacity: 1;
+      transition: transform 8s ease;
+      transform: translate(30%, -200%) scale(.8);
+    }
+
+    .letter.hovered {
+      transform: translate(30%, -200%) scale(1);
+      transition: transform 0.3s ease;
+    }
+
+    .walk-swing {
+      animation: swing 0.6s ease-in-out infinite;
+    }
+
+    .swing-fast {
+      animation: swing 0.3s ease-in-out infinite;
+      transform: translateY(-50%) scale(1.2);
+    }
+
+    .sparkle {
+      position: absolute;
+      bottom: 30%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      transform: translate(350%, -150%) scale(1.5);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.5s ease;
+      image-rendering: pixelated;
+    }
+
+    .sparkle.show {
+      opacity: 1;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 64, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 10;
+    }
+
+    .popup-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .popup {
+      background: #004080;
+      color: #00ffff;
+      padding: 20px 30px;
+      border: 8px solid #00ccff;
+      border-radius: 0;
+      text-align: center;
+      min-height: 600px;
+      max-width: 400px;
+      box-shadow: 0 0 0 8px #002244 inset, 0 0 20px #00f;
+      animation: popIn 0.5s ease;
+      image-rendering: pixelated;
+    }
+
+    .popup button {
+      margin-top: 15px;
+      position: relative;
+      bottom: 0;
+      padding: 8px 16px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #audioFallback {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      background: #004080;
+      color: #00ffff;
+      border: 4px solid #00ccff;
+      padding: 8px 10px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      cursor: pointer;
+      z-index: 9999;
+      display: none;
+      border-radius: 0;
+      box-shadow: 0 0 0 4px #002244 inset;
+    }
+
+    #audioFallback:hover {
+      background: #003366;
+    }
+
+    @keyframes swing {
+      0% {
+        transform: translateY(-50%) rotate(-5deg);
+      }
+
+      50% {
+        transform: translateY(-50%) rotate(5deg);
+      }
+
+      100% {
+        transform: translateY(-50%) rotate(-5deg);
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateY(-50%) translateY(-20px);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <audio id="bgAudio" src="lagu.mp3" loop preload="auto" style="display:none"></audio>
+  <button id="audioFallback">PLAY SOUND</button>
+  <img src="./run.png" alt="walker" class="walker walk-swing">
+
+  <img src="./loveletter.png" alt="letter" class="letter">
+
+  <img src="./sparkle.png" alt="sparkle" class="sparkle">
+
+  <div class="popup-overlay" id="popup">
+    <div class="popup">
+      <h2>Selamat Ulang Tahun Sayang Jian! 🎉</h2>
+      <p>Hari ini adalah hari istimewa, karena dunia diberi hadiah paling indah. Selamat ulang tahun, cinta.
+        Semoga hidupmu selalu dipenuhi cahaya, doa, dan cinta yang tidak pernah habis ✨.</p>
+      <p>Jian nggk bisa ngasih banyak hadiah, dan hadiahnya nggk seberapa maaf ya sayang.</p>
+      <p>Terimakasih Sayang sudah hadir di hidup Jian.</p>
+      <p>Semoga Jeje menjadi crypto analyst yang Jeje impikan, belajarlah yang bener sayang buat bapak mamak bangga yaa.
+      </p>
+      <button id="closeBtn">Tutup</button>
+    </div>
+  </div>
+
+  <script>
+    const walker = document.querySelector('.walker');
+    const letter = document.querySelector('.letter');
+    const sparkle = document.querySelector(".sparkle");
+    const popup = document.getElementById('popup');
+    const closeBtn = document.getElementById('closeBtn');
+    let direction = 1; // 1 = kanan, -1 = kiri
+    let speed = 5;
+    let pos = 0;
+    let letterShown = false;
+    let state = "walk";
+    let paused = true
+
+    function animate() {
+      const screenWidth = window.innerWidth;
+      const walkerWidth = walker.offsetWidth;
+
+      if (state == "walk") {
+        pos += speed * direction;
+      }
+
+      // update posisi
+      walker.style.left = pos + 'px';
+
+      // cek tengah layar
+      const middle = (screenWidth - walkerWidth) / 2;
+      if (pos >= middle - 10 && pos <= middle + 10 && state == "walk") {
+        walker.classList.remove("walk-swing");
+        state = "idle";
+        walker.src = "present.png";
+        if (!letterShown) {
+          letter.classList.add("show")
+          setTimeout(() => {
+            letterShown = true;
+          }, 10000)
+        } else {
+          walker.classList.add('bounce');
+        }
+
+        if (!paused) {
+          setTimeout(() => {
+            walker.src = "./run.png"
+            walker.classList.add("walk-swing");
+            walker.classList.remove("bounce")
+            state = "walk"
+          }, 10000)
+        }
+      }
+
+      // bounce kiri/kanan
+      if (pos + walkerWidth >= screenWidth) {
+        direction = -1;
+        walker.style.transform = 'translateY(-50%) scaleX(-1)'; // flip ke kiri
+      }
+      if (pos <= 0) {
+        direction = 1;
+        walker.style.transform = 'translateY(-50%) scaleX(1)'; // flip ke kanan
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+  <script>
+    // Walker
+    walker.addEventListener('mouseenter', () => {
+      walker.classList.add('swing-fast');
+    });
+    walker.addEventListener('mouseleave', () => {
+      walker.classList.remove('swing-fast');
+    });
+
+    //Letter
+    letter.addEventListener('transitionend', () => {
+      sparkle.classList.add('show');
+      letter.addEventListener('mouseenter', () => {
+        letter.classList.add('hovered');
+      });
+      letter.addEventListener('mouseleave', () => {
+        letter.classList.remove('hovered');
+      });
+
+      letter.addEventListener("click", e => {
+        state = "walk"
+        popup.classList.add('show')
+        walker.classList.remove("bounce")
+        walker.src = "./run.png"
+        walker.classList.add("walk-swing");
+        paused = false
+      })
+
+      closeBtn.addEventListener('click', () => {
+        popup.classList.remove('show');
+      });
+    }, { once: true });
+
+  </script>
+  <script>
+    (function () {
+      const audio = document.getElementById('bgAudio');
+      const fallback = document.getElementById('audioFallback');
+
+      // Attempt normal autoplay (unmuted)
+      function tryPlayUnmuted() {
+        audio.muted = false;
+        return audio.play();
+      }
+
+      // Attempt muted autoplay (often allowed)
+      function tryPlayMuted() {
+        audio.muted = true;
+        const p = audio.play();
+        // If it plays muted, return resolved promise; if rejected, forward rejection
+        return p;
+      }
+
+      // If autoplay blocked, show fallback UI so user can allow audio
+      function showFallbackUI() {
+        fallback.style.display = 'block';
+      }
+
+      // Hide fallback UI
+      function hideFallbackUI() {
+        fallback.style.display = 'none';
+      }
+
+      // Primary flow: try unmuted -> if fails try muted -> if muted plays show unmute prompt -> else show fallback
+      tryPlayUnmuted()
+        .then(() => {
+          // autoplay succeeded unmuted
+          console.log('Autoplay started (unmuted).');
+        })
+        .catch(() => {
+          // unmuted autoplay blocked; try muted autoplay
+          console.log('Unmuted autoplay blocked, trying muted autoplay...');
+          tryPlayMuted()
+            .then(() => {
+              console.log('Autoplay started muted.');
+              // show fallback so user can unmute if they want
+              // unmute only when user clicks fallback
+              showFallbackUI();
+              fallback.textContent = 'UNMUTE';
+              fallback.onclick = () => {
+                audio.muted = false;
+                audio.play().then(() => {
+                  hideFallbackUI();
+                }).catch(() => {
+                  // if still blocked, instruct user
+                  fallback.textContent = 'CLICK TO PLAY';
+                  audio.muted = false;
+                  fallback.onclick = manualPlay;
+                });
+              };
+            })
+            .catch(() => {
+              console.log('Muted autoplay also blocked — showing manual play button.');
+              // both blocked -> show manual click button
+              showFallbackUI();
+              fallback.textContent = 'PLAY SOUND';
+              fallback.onclick = manualPlay;
+            });
+        });
+
+      // Manual play handler for fallback button
+      function manualPlay() {
+        audio.muted = false;
+        audio.play().then(() => {
+          hideFallbackUI();
+        }).catch((err) => {
+          // still blocked — keep UI and instruct user
+          fallback.textContent = 'CLICK TO ALLOW SOUND';
+          console.warn('Manual play still blocked:', err);
+        });
+      }
+
+      // Optional: hide fallback when user navigates away / when audio ended
+      audio.addEventListener('ended', () => hideFallbackUI());
+    })();
+  </script>
+</body>
+
+</html>
